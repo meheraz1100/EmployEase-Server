@@ -219,7 +219,7 @@ async function run() {
       const result = await userCollection.findOne(query);
       res.send(result);
     })
-    
+
     // employee payment api
     app.get('/payment/:id', async (req, res) => {
       const id = req.params.id;
