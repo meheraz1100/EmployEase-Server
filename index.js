@@ -227,7 +227,7 @@ async function run() {
       const result = await userCollection.findOne(query);
       res.send(result);
     })
-    
+
     app.get('/payments/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
       if(req.params.email !== req.decoded?.email){
@@ -237,7 +237,7 @@ async function run() {
       const result = await userCollection.findOne(query);
       res.send(result);
     })
-
+    
     // store the payment ids
     app.post('/payments', async(req, res) => {
       const payment = req.body;
