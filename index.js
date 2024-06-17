@@ -204,7 +204,7 @@ async function run() {
       const result = await userCollection.updateOne(filter, updatedDoc);
       res.send(result);
     })
-    
+
     // fire a employee
     app.delete('/users/:id', async (req, res) => {
       const id = req.params.id;
