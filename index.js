@@ -166,7 +166,21 @@ async function run() {
       res.send(result);
     })
 
-    // make a admin to hr
+    // make employee from hr
+    app.patch('/users/hr/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id)
+      const filter = { _id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          role: 'hr'
+        }
+      }
+      const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    })
+
+    // make a admin from hr
     app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id)};
@@ -179,18 +193,22 @@ async function run() {
       res.send(result);
     })
 
-    // make employee to hr
-    app.patch(('/users/hr/:id', verifyToken, verifyAdmin, async (req, res) => {
+    // update employee role with a single api
+    app.patch('/users/update-role/:id', async (req, res) => {
       const id = req.params.id;
+      console.log(id)
       const filter = { _id: new ObjectId(id)};
       const updatedDoc = {
         $set: {
-          role: 'hr'
+          role: req.body.role
         }
       }
       const result = await userCollection.updateOne(filter, updatedDoc);
       res.send(result);
-    }))
+    })
+
+
+    
 
     // verify a employee 
     app.patch('/employees/verify/:id', async (req, res) => {
