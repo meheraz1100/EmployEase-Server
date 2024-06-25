@@ -156,6 +156,13 @@ async function run() {
       res.send(result);
     })
 
+    // get only verified employee and HR
+    app.get('/verified-employee-and-hr', async ( req, res) => {
+      const query = ({ verify: 'true' })
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    })
+
     
 
     // admin api
@@ -201,6 +208,19 @@ async function run() {
       const updatedDoc = {
         $set: {
           role: req.body.role
+        }
+      }
+      const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    })
+
+    // fire a employee 
+    app.patch('/users/update-status/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          status: req.body.status
         }
       }
       const result = await userCollection.updateOne(filter, updatedDoc);
@@ -263,6 +283,12 @@ async function run() {
       res.send(result);
     })
 
+    // get stored payments
+    app.get('/payments', async (req, res) => {
+      const result = await paymentCollection.find().toArray();
+      res.send(result);
+    })
+
 
     // payment intent
     app.post('/create-payment-intent', async(req, res) => {
@@ -306,6 +332,39 @@ async function run() {
     app.get('/worksheet', async (req, res) => {
       const result = await worksheetCollection.find().toArray();
       res.send(result);
+    })
+
+    // adjust the salary of employees and hr
+    app.put('/users/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          salary: req.body.salary
+        }
+      }
+      const result = await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    })
+
+    // get the total paid salary amount
+    app.get('/admin-stats', async (req, res) => {
+      const paidSalary = await paymentCollection.estimatedDocumentCount();
+
+      const result = await paymentCollection.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalPaidSalary: {
+              $sum: '$salary'
+            }
+          }
+        }
+      ]).toArray();
+
+      const totalPaidSalary = result.length > 0 ? result[0].totalPaidSalary : 0;
+
+      res.send({ paidSalary, totalPaidSalary });
     })
 
     
