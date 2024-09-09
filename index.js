@@ -187,6 +187,8 @@ async function run() {
       res.send(result);
     })
 
+
+
     // make a admin from hr
     app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
